@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:  
+  app:
+    container_name: appnode
+    restart: always
+    build: .
+    ports: 
+      - "5000:3000"
+    links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+    logging:
+      driver: none
+    environment:
+      - POSTGRESS_URL=postgresql://postgres:123@db:5432/postgres
+
+  db:      
+    container_name: dbpostgress
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "123"
+    logging:
+      driver: none
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    
+
+#Parar todos los contenedores: docker stop $(docker ps -a -q)
+#Eliminar todos los contenedores: docker rm $(docker ps -a -q)
+#Para construir: docker-compose build
+#Para ejecutar: docker-compose up
+#Para correr un contenedor: docker exec -it nombre bash
